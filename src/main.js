@@ -289,6 +289,20 @@ function getBossSpiritsForDistrict(district, guardianSpirit) {
   return [guardianSpirit, ...shuffledPreviousBosses].slice(0, bossCount);
 }
 
+function getSpiritPowerScore(spirit) {
+  const stats = getProgressiveSpiritBaseStats(spirit);
+  return stats.maxHp + stats.attack * 4 + stats.defense * 3 + stats.speed * 2;
+}
+
+function getFinalBattleBossSpirits() {
+  const strongestGuardians = [...orderedSpirits]
+    .sort((a, b) => getSpiritPowerScore(b) - getSpiritPowerScore(a))
+    .slice(0, 2)
+    .map((spirit) => getGuardianBossSpirit(spirit));
+
+  return [finalBossSpirit, ...strongestGuardians];
+}
+
 function formatDistrictName(district) {
   return `${district.code} ${district.name}`;
 }
@@ -902,15 +916,16 @@ function renderFinalBattle() {
 
   activeBattleDistrictId = finalBattleId;
   activeSkillMemberId = "";
+  const finalBattleBossSpirits = getFinalBattleBossSpirits();
   activeBattle = createBattleState(
-    [finalBossSpirit],
+    finalBattleBossSpirits,
     getFinalQuestionPool(),
     getTeamBattleStats(),
   );
   if (activeBattle.phase === "question") {
     activeBattle = {
       ...activeBattle,
-      lastMessage: getBattleOpeningMessage(finalBossSpirit, [finalBossSpirit]),
+      lastMessage: getBattleOpeningMessage(finalBossSpirit, finalBattleBossSpirits),
     };
   }
   renderBattleState();
