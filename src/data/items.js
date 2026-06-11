@@ -1,0 +1,51 @@
+export const items = [
+  {
+    id: "smallPeachPotion",
+    name: "小桃藥水",
+    price: 50,
+    type: "heal",
+    value: 30,
+    description: "回復 30 HP。",
+  },
+  {
+    id: "mediumPeachPotion",
+    name: "中桃藥水",
+    price: 120,
+    type: "heal",
+    value: 70,
+    description: "回復 70 HP。",
+  },
+  {
+    id: "largePeachPotion",
+    name: "大桃藥水",
+    price: 250,
+    type: "heal",
+    value: 150,
+    description: "回復 150 HP。",
+  },
+  {
+    id: "energyJelly",
+    name: "能量果凍",
+    price: 180,
+    type: "energy",
+    value: 2,
+    description: "增加 2 點能量。",
+  },
+  {
+    id: "revivePeachSeed",
+    name: "復活桃核",
+    price: 500,
+    type: "revive",
+    value: 1,
+    description: "讓倒下的精靈復活。",
+  },
+  {
+    id: "mapHintCard",
+    name: "地圖提示卡",
+    price: 100,
+    type: "hint",
+    value: 1,
+    description: "答題時刪除一個錯誤選項。",
+  },
+];
+
