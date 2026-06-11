@@ -4,7 +4,6 @@ import { gameConfig } from "./data/gameConfig.js?v=302";
 import { characterSkills } from "./data/characterSkills.js?v=405";
 import { characterIntroductions } from "./data/characterIntroductions.js?v=401";
 import { questions } from "./data/questions.js?v=401";
-import { zhuyinCharMap, zhuyinTextMap } from "./data/zhuyinTextMap.js?v=401";
 import {
   answerQuestion,
   createBattleState,
@@ -500,21 +499,6 @@ function escapeHtml(value) {
     .replaceAll(">", "&gt;")
     .replaceAll('"', "&quot;")
     .replaceAll("'", "&#39;");
-}
-
-function renderZhuyinText(value) {
-  const text = String(value ?? "");
-  const characters = Array.from(text);
-  const readings = zhuyinTextMap[text]
-    ?? characters.map((character) => zhuyinCharMap[character] ?? "");
-  const content = characters.map((character, index) => {
-    const safeCharacter = escapeHtml(character);
-    const reading = readings[index] ?? "";
-    if (!reading) return safeCharacter;
-    return `<ruby><rb>${safeCharacter}</rb><rt>${escapeHtml(reading)}</rt></ruby>`;
-  }).join("");
-
-  return `<span class="zhuyin-text" aria-label="${escapeHtml(text)}">${content}</span>`;
 }
 
 function getDialogueLines(entry) {
@@ -1259,7 +1243,7 @@ function renderAnswerExplanation() {
 
   return `
     <div class="answer-explanation ${resultClass}">
-      <p>${renderZhuyinText(explanation)}</p>
+      <p>${escapeHtml(explanation)}</p>
     </div>
   `;
 }
@@ -1343,7 +1327,7 @@ function renderBattleQuestion(question, isQuestion) {
 
   return `
     <div class="question-box">
-      <p class="question-text">${renderZhuyinText(question.question)}</p>
+      <p class="question-text">${escapeHtml(question.question)}</p>
       <div class="answer-grid">
         ${question.options
           .map((option) => {
@@ -1353,7 +1337,7 @@ function renderBattleQuestion(question, isQuestion) {
                 type="button"
                 data-answer="${escapeHtml(option)}"
               >
-                ${renderZhuyinText(option)}
+                ${escapeHtml(option)}
               </button>
             `;
           })

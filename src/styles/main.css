@@ -9,7 +9,7 @@
 :root {
   color: #263238;
   background: #fff7e8;
-  font-family: "Noto Sans TC", "PingFang TC", "Microsoft JhengHei", sans-serif;
+  font-family: "Bpmf Zihi Kai Std", "Noto Sans TC", "PingFang TC", "Microsoft JhengHei", sans-serif;
 }
 
 * {
@@ -24,6 +24,7 @@ body {
   margin: 0;
   min-height: 100vh;
   background: #fff7e8;
+  font-family: "Bpmf Zihi Kai Std", "Noto Sans TC", "PingFang TC", "Microsoft JhengHei", sans-serif;
   overflow-x: hidden;
 }
 
@@ -1004,6 +1005,7 @@ p {
   background: rgba(255, 255, 255, 0.86);
   border: 1px solid rgba(38, 50, 56, 0.1);
   border-radius: 8px;
+  font-family: "Bpmf Zihi Kai Std", "Noto Sans TC", "PingFang TC", "Microsoft JhengHei", sans-serif;
   padding: 1.2rem;
 }
 
@@ -1105,6 +1107,7 @@ p {
   border: 1px solid rgba(42, 140, 125, 0.14);
   border-radius: 8px;
   color: #3f5057;
+  font-family: "Bpmf Zihi Kai Std", "Noto Sans TC", "PingFang TC", "Microsoft JhengHei", sans-serif;
   font-size: 0.96rem;
   line-height: 1.45;
   margin: 0;
@@ -1207,6 +1210,7 @@ p {
   background: rgba(42, 140, 125, 0.12);
   border-radius: 8px;
   color: #176f63;
+  font-family: "Bpmf Zihi Kai Std", "Noto Sans TC", "PingFang TC", "Microsoft JhengHei", sans-serif;
   font-weight: 800;
   padding: 0.36rem 0.58rem;
 }
@@ -2257,31 +2261,8 @@ p {
 .question-text {
   font-size: 1.1rem;
   font-weight: 900;
-  line-height: 2;
+  line-height: 1.55;
   margin: 0;
-}
-
-.zhuyin-text {
-  font-family: "Bpmf Zihi Kai Std", "Noto Sans TC", "PingFang TC", "Microsoft JhengHei", sans-serif;
-  line-height: 1.9;
-}
-
-.zhuyin-text ruby {
-  ruby-align: center;
-  ruby-position: over;
-}
-
-.zhuyin-text rt {
-  font-family: "Bpmf Zihi Kai Std", "Noto Sans Bopomofo", "Bopomofo TC", "Noto Sans TC", sans-serif;
-  font-size: 0.46em;
-  font-weight: 400;
-  letter-spacing: 0;
-  line-height: 1;
-  text-align: center;
-}
-
-.answer-explanation .zhuyin-text {
-  line-height: 1.85;
 }
 
 .answer-grid {
@@ -2292,10 +2273,10 @@ p {
 
 .answer-button {
   background: #2a8c7d;
-  line-height: 1.75;
-  min-height: 56px;
+  line-height: 1.35;
+  min-height: 48px;
   overflow-wrap: anywhere;
-  padding: 0.7rem 0.7rem 0.58rem;
+  padding: 0.62rem 0.7rem;
 }
 
 .answer-button:hover {
@@ -2990,15 +2971,11 @@ p {
 
   .question-text {
     font-size: 0.96rem;
-    line-height: 1.9;
+    line-height: 1.5;
   }
 
   .answer-button {
-    min-height: 52px;
-    padding: 0.62rem 0.62rem 0.5rem;
-  }
-
-  .zhuyin-text rt {
-    font-size: 0.42em;
+    min-height: 46px;
+    padding: 0.58rem 0.62rem;
   }
 }
