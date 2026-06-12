@@ -14,6 +14,7 @@ import {
 import { loadProgress, loginProgress, logoutProgress, saveProgress } from "./systems/progressStorage.js?v=403";
 
 const app = document.querySelector("#app");
+const zhuyinToggleButton = document.querySelector("[data-zhuyin-toggle]");
 
 const orderedDistricts = [...districts].sort((a, b) => a.order - b.order);
 const districtOrderById = new Map(orderedDistricts.map((district) => [district.id, district.order]));
@@ -79,6 +80,23 @@ let activeSkillMemberId = "";
 let activePokedexCharacterId = "player_boy";
 let activeShrineCharacterId = "";
 let isLoginPanelOpen = false;
+let isZhuyinEnabled = false;
+
+function renderZhuyinToggle() {
+  if (!zhuyinToggleButton) return;
+  zhuyinToggleButton.textContent = `注音字體：${isZhuyinEnabled ? "開" : "關"}`;
+  zhuyinToggleButton.setAttribute("aria-pressed", String(isZhuyinEnabled));
+}
+
+function setZhuyinEnabled(isEnabled) {
+  isZhuyinEnabled = isEnabled;
+  document.body.classList.toggle("is-zhuyin-enabled", isZhuyinEnabled);
+  renderZhuyinToggle();
+}
+
+zhuyinToggleButton?.addEventListener("click", () => {
+  setZhuyinEnabled(!isZhuyinEnabled);
+});
 
 const districtHotspots = {
   taoyuan: { left: 51.1, top: 25.5 },
@@ -1897,4 +1915,5 @@ app.addEventListener("click", (event) => {
   if (view === "shop") renderShop();
 });
 
+renderZhuyinToggle();
 renderAppStart();

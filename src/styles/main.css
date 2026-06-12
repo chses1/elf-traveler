@@ -9,7 +9,7 @@
 :root {
   color: #263238;
   background: #fff7e8;
-  font-family: "Bpmf Zihi Kai Std", "Noto Sans TC", "PingFang TC", "Microsoft JhengHei", sans-serif;
+  font-family: "Noto Sans TC", "PingFang TC", "Microsoft JhengHei", sans-serif;
 }
 
 * {
@@ -24,8 +24,40 @@ body {
   margin: 0;
   min-height: 100vh;
   background: #fff7e8;
-  font-family: "Bpmf Zihi Kai Std", "Noto Sans TC", "PingFang TC", "Microsoft JhengHei", sans-serif;
+  font-family: "Noto Sans TC", "PingFang TC", "Microsoft JhengHei", sans-serif;
   overflow-x: hidden;
+}
+
+body.is-zhuyin-enabled {
+  font-family: "Bpmf Zihi Kai Std", "Noto Sans TC", "PingFang TC", "Microsoft JhengHei", sans-serif;
+}
+
+body.is-zhuyin-enabled button,
+body.is-zhuyin-enabled input,
+body.is-zhuyin-enabled textarea,
+body.is-zhuyin-enabled select {
+  font-family: inherit;
+}
+
+.zhuyin-toggle-button {
+  background: rgba(42, 140, 125, 0.94);
+  border: 2px solid rgba(255, 255, 255, 0.86);
+  box-shadow: 0 12px 26px rgba(45, 31, 20, 0.18);
+  font-size: 0.92rem;
+  min-width: 0;
+  padding: 0.58rem 0.78rem;
+  position: fixed;
+  right: max(18px, env(safe-area-inset-right));
+  top: max(18px, env(safe-area-inset-top));
+  z-index: 50;
+}
+
+.zhuyin-toggle-button:hover {
+  background: #176f63;
+}
+
+.zhuyin-toggle-button[aria-pressed="true"] {
+  background: #ef6f6c;
 }
 
 button {
@@ -1005,7 +1037,6 @@ p {
   background: rgba(255, 255, 255, 0.86);
   border: 1px solid rgba(38, 50, 56, 0.1);
   border-radius: 8px;
-  font-family: "Bpmf Zihi Kai Std", "Noto Sans TC", "PingFang TC", "Microsoft JhengHei", sans-serif;
   padding: 1.2rem;
 }
 
@@ -1107,7 +1138,6 @@ p {
   border: 1px solid rgba(42, 140, 125, 0.14);
   border-radius: 8px;
   color: #3f5057;
-  font-family: "Bpmf Zihi Kai Std", "Noto Sans TC", "PingFang TC", "Microsoft JhengHei", sans-serif;
   font-size: 0.96rem;
   line-height: 1.45;
   margin: 0;
@@ -1210,7 +1240,6 @@ p {
   background: rgba(42, 140, 125, 0.12);
   border-radius: 8px;
   color: #176f63;
-  font-family: "Bpmf Zihi Kai Std", "Noto Sans TC", "PingFang TC", "Microsoft JhengHei", sans-serif;
   font-weight: 800;
   padding: 0.36rem 0.58rem;
 }
@@ -2546,6 +2575,13 @@ p {
 }
 
 @media (max-width: 720px) {
+  .zhuyin-toggle-button {
+    font-size: 0.78rem;
+    padding: 0.46rem 0.58rem;
+    right: max(10px, env(safe-area-inset-right));
+    top: max(10px, env(safe-area-inset-top));
+  }
+
   .app-shell {
     padding: 8px;
   }
