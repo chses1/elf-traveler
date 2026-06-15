@@ -81,6 +81,7 @@ let activePokedexCharacterId = "player_boy";
 let activeShrineCharacterId = "";
 let isLoginPanelOpen = false;
 let isZhuyinEnabled = false;
+let fullscreenMessage = "";
 
 function renderZhuyinToggle() {
   if (!zhuyinToggleButton) return;
@@ -498,6 +499,35 @@ function renderAppStart() {
   renderHome();
 }
 
+function scrollPageToTop() {
+  requestAnimationFrame(() => window.scrollTo(0, 0));
+}
+
+function isInFullscreenMode() {
+  return Boolean(document.fullscreenElement || document.webkitFullscreenElement) || window.navigator.standalone === true;
+}
+
+async function requestGameFullscreen() {
+  fullscreenMessage = "";
+  const requestFullscreen = document.documentElement.requestFullscreen
+    ?? document.documentElement.webkitRequestFullscreen;
+
+  try {
+    if (!isInFullscreenMode() && requestFullscreen) {
+      await requestFullscreen.call(document.documentElement);
+      fullscreenMessage = "已放大顯示。";
+    } else if (isInFullscreenMode()) {
+      fullscreenMessage = "目前已是全螢幕。";
+    } else {
+      fullscreenMessage = "Safari 若無法直接全螢幕，請點分享，再選「加入主畫面」開啟。";
+    }
+  } catch {
+    fullscreenMessage = "Safari 若阻擋全螢幕，請點分享，再選「加入主畫面」開啟。";
+  }
+
+  renderHome();
+}
+
 function renderDialogueBubbles(lines = []) {
   if (!lines.length) return "";
 
@@ -740,6 +770,10 @@ function renderHome() {
   app.innerHTML = `
     <section class="main-screen">
       <button class="home-logout-button" type="button" data-logout>登出</button>
+      <button class="home-fullscreen-button" type="button" data-fullscreen>
+        ${isInFullscreenMode() ? "已全螢幕" : "全螢幕"}
+      </button>
+      ${fullscreenMessage ? `<p class="home-fullscreen-message" aria-live="polite">${fullscreenMessage}</p>` : ""}
       ${renderFinalBossHomeEntry(progress)}
       ${renderMapHotspots()}
       ${playerIntro ? `
@@ -756,6 +790,7 @@ function renderHome() {
       ` : ""}
     </section>
   `;
+  scrollPageToTop();
 }
 
 function renderFinalBossHomeEntry(progress) {
@@ -1387,6 +1422,7 @@ function renderPokedex() {
       ${renderPokedexDetail(selectedEntry)}
     </section>
   `;
+  scrollPageToTop();
 }
 
 function getPokedexEntries(progress, ownedSpiritIds) {
@@ -1722,6 +1758,12 @@ app.addEventListener("input", (event) => {
 });
 
 app.addEventListener("click", (event) => {
+  const fullscreenButton = event.target.closest("[data-fullscreen]");
+  if (fullscreenButton) {
+    requestGameFullscreen();
+    return;
+  }
+
   const openLoginButton = event.target.closest("[data-open-login]");
   if (openLoginButton) {
     isLoginPanelOpen = true;

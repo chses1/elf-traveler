@@ -23,6 +23,7 @@ html {
 body {
   margin: 0;
   min-height: 100vh;
+  min-height: 100dvh;
   background: #fff7e8;
   font-family: "Noto Sans TC", "PingFang TC", "Microsoft JhengHei", sans-serif;
   overflow-x: hidden;
@@ -82,7 +83,9 @@ button:disabled {
 
 .app-shell {
   margin: 0 auto;
-  max-width: 1280px;
+  max-width: 1680px;
+  min-height: 100vh;
+  min-height: 100dvh;
   padding: 14px;
   width: 100%;
 }
@@ -93,7 +96,7 @@ button:disabled {
     url("../../img/main.jpeg?v=20260521") center / cover no-repeat;
   border-radius: 8px;
   aspect-ratio: 4 / 3;
-  min-height: 0;
+  min-height: min(860px, calc(100dvh - 28px));
   overflow: hidden;
   position: relative;
   width: 100%;
@@ -217,6 +220,34 @@ button:disabled {
   padding: 0.72rem 1rem;
   position: absolute;
   right: clamp(14px, 2.5vw, 32px);
+  z-index: 5;
+}
+
+.home-fullscreen-button {
+  box-shadow: 0 10px 24px rgba(87, 52, 32, 0.24);
+  min-width: 0;
+  padding: 0.72rem 1rem;
+  position: absolute;
+  right: clamp(14px, 2.5vw, 32px);
+  top: clamp(82px, 8vw, 108px);
+  z-index: 5;
+}
+
+.home-fullscreen-message {
+  background: rgba(255, 250, 244, 0.92);
+  border: 1px solid rgba(42, 140, 125, 0.22);
+  border-radius: 8px;
+  box-shadow: 0 10px 24px rgba(87, 52, 32, 0.16);
+  color: #176f63;
+  font-size: clamp(1rem, 1.6vw, 1.2rem);
+  font-weight: 900;
+  line-height: 1.45;
+  margin: 0;
+  max-width: min(420px, calc(100% - 32px));
+  padding: 0.75rem 0.9rem;
+  position: absolute;
+  right: clamp(14px, 2.5vw, 32px);
+  top: clamp(140px, 13vw, 172px);
   z-index: 5;
 }
 
@@ -607,6 +638,11 @@ p {
   padding-bottom: 1rem;
 }
 
+.topbar button {
+  font-size: clamp(1.08rem, 1.7vw, 1.35rem);
+  padding: 0.86rem 1.15rem;
+}
+
 .district-grid {
   display: grid;
   gap: 1rem;
@@ -659,7 +695,9 @@ p {
 
 .pokedex-view {
   display: grid;
-  gap: 1rem;
+  gap: 1.1rem;
+  grid-template-rows: auto minmax(0, 1fr);
+  min-height: calc(100dvh - 116px);
 }
 
 .pokedex-roster {
@@ -680,8 +718,8 @@ p {
   gap: 0.18rem;
   justify-items: center;
   flex: 0 0 clamp(118px, 11vw, 150px);
-  min-height: 126px;
-  padding: 0.42rem 0.3rem;
+  min-height: clamp(132px, 12vw, 168px);
+  padding: 0.5rem 0.36rem;
 }
 
 .pokedex-tab:hover,
@@ -709,7 +747,7 @@ p {
   filter:
     drop-shadow(0 0 1px rgba(255, 255, 255, 0.95))
     drop-shadow(0 8px 12px rgba(35, 27, 18, 0.16));
-  height: clamp(72px, 8.6vw, 104px);
+  height: clamp(78px, 8.8vw, 112px);
   object-fit: contain;
   width: min(100%, 112px);
 }
@@ -723,7 +761,7 @@ p {
 
 .pokedex-tab span,
 .pokedex-tab small {
-  font-size: clamp(0.68rem, 1.15vw, 0.86rem);
+  font-size: clamp(0.82rem, 1.25vw, 1rem);
   font-weight: 900;
   line-height: 1.15;
   text-align: center;
@@ -731,7 +769,7 @@ p {
 
 .pokedex-tab small {
   color: #a94643;
-  font-size: clamp(0.62rem, 1vw, 0.78rem);
+  font-size: clamp(0.74rem, 1.08vw, 0.9rem);
 }
 
 .pokedex-detail {
@@ -742,8 +780,8 @@ p {
   display: grid;
   gap: 1rem;
   grid-template-columns: minmax(330px, 0.95fr) minmax(260px, 0.82fr) minmax(320px, 1fr);
-  min-height: 0;
-  padding: 1rem;
+  min-height: min(760px, calc(100dvh - 270px));
+  padding: clamp(1rem, 1.6vw, 1.45rem);
 }
 
 .pokedex-detail-hero {
@@ -762,7 +800,7 @@ p {
   filter:
     drop-shadow(0 0 1px rgba(255, 255, 255, 0.95))
     drop-shadow(0 14px 20px rgba(35, 27, 18, 0.18));
-  max-height: 460px;
+  max-height: clamp(420px, 55dvh, 640px);
   object-fit: contain;
   transform: translateX(var(--pokedex-hero-shift-x));
   width: min(100%, 460px);
@@ -774,13 +812,13 @@ p {
 }
 
 .pokedex-detail-hero p {
-  font-size: 1.08rem;
+  font-size: clamp(1.18rem, 1.55vw, 1.45rem);
   font-weight: 900;
   margin: 0.28rem 0 0;
 }
 
 .pokedex-detail-body {
-  align-self: start;
+  align-self: stretch;
   display: grid;
   gap: 1rem;
   grid-column: 2 / 4;
@@ -791,7 +829,7 @@ p {
 .pokedex-skills-section,
 .pokedex-story-section {
   display: grid;
-  min-height: 0;
+  min-height: 100%;
 }
 
 .pokedex-detail-section {
@@ -818,9 +856,9 @@ p {
 
 .pokedex-detail-section > p {
   color: #54656d;
-  font-size: 0.9rem;
-  line-height: 1.65;
-  margin: 0.5rem 0 0;
+  font-size: clamp(1.05rem, 1.35vw, 1.28rem);
+  line-height: 1.7;
+  margin: 0.62rem 0 0;
 }
 
 .catchphrase {
@@ -881,8 +919,8 @@ p {
 }
 
 .pokedex-detail .stats-grid span {
-  font-size: 1.02rem;
-  padding: 0.55rem 0.65rem;
+  font-size: clamp(1.16rem, 1.45vw, 1.42rem);
+  padding: 0.78rem 0.75rem;
 }
 
 .pokedex-skill-list {
@@ -898,7 +936,7 @@ p {
   border: 1px solid rgba(42, 140, 125, 0.18);
   border-radius: 8px;
   min-height: 0;
-  padding: 0.5rem 0.58rem;
+  padding: 0.72rem 0.78rem;
 }
 
 .pokedex-skill-list div.is-locked-skill {
@@ -915,22 +953,22 @@ p {
 .pokedex-skill-list strong {
   color: #176f63;
   display: block;
-  font-size: 0.9rem;
+  font-size: clamp(1.08rem, 1.35vw, 1.28rem);
 }
 
 .pokedex-skill-list span {
   color: #a94643;
   display: block;
-  font-size: 0.74rem;
+  font-size: clamp(0.92rem, 1.15vw, 1.08rem);
   font-weight: 900;
   margin-top: 0.12rem;
 }
 
 .pokedex-skill-list p {
   color: #54656d;
-  font-size: 0.78rem;
-  line-height: 1.45;
-  margin: 0.22rem 0 0;
+  font-size: clamp(0.98rem, 1.2vw, 1.14rem);
+  line-height: 1.5;
+  margin: 0.3rem 0 0;
 }
 
 .stats-grid,
@@ -2384,50 +2422,52 @@ p {
   }
 
   .topbar {
-    margin-bottom: 0.55rem;
-    padding-bottom: 0.45rem;
+    margin-bottom: 0.78rem;
+    padding-bottom: 0.62rem;
   }
 
   .topbar button {
-    font-size: 0.95rem;
-    padding: 0.58rem 0.8rem;
+    font-size: 1.18rem;
+    padding: 0.78rem 1rem;
   }
 
   .pokedex-view {
-    gap: 0.45rem;
+    gap: 0.72rem;
+    min-height: calc(100dvh - 94px);
   }
 
   .pokedex-roster {
-    gap: 0.32rem;
-    padding-bottom: 0.22rem;
+    gap: 0.44rem;
+    padding-bottom: 0.32rem;
   }
 
   .pokedex-tab {
-    flex-basis: 88px;
-    gap: 0.08rem;
-    min-height: 68px;
-    padding: 0.22rem 0.14rem;
+    flex-basis: 118px;
+    gap: 0.12rem;
+    min-height: 112px;
+    padding: 0.38rem 0.24rem;
   }
 
   .pokedex-tab img {
-    height: clamp(34px, 4.8vw, 46px);
-    width: min(100%, 56px);
+    height: clamp(64px, 7.4vw, 86px);
+    width: min(100%, 96px);
   }
 
   .pokedex-tab span,
   .pokedex-tab small {
-    font-size: 0.66rem;
-    line-height: 1.05;
+    font-size: 0.84rem;
+    line-height: 1.1;
   }
 
   .pokedex-tab small {
-    font-size: 0.6rem;
+    font-size: 0.76rem;
   }
 
   .pokedex-detail {
-    gap: 0.6rem;
-    grid-template-columns: minmax(225px, 0.9fr) minmax(190px, 0.78fr) minmax(250px, 1fr);
-    padding: 0.65rem;
+    gap: 0.9rem;
+    grid-template-columns: minmax(300px, 0.86fr) minmax(250px, 0.9fr) minmax(300px, 1fr);
+    min-height: calc(100dvh - 238px);
+    padding: 1rem;
   }
 
   .pokedex-detail-hero {
@@ -2436,17 +2476,17 @@ p {
   }
 
   .pokedex-detail-hero img {
-    max-height: 250px;
-    width: min(100%, 250px);
+    max-height: clamp(330px, 46dvh, 430px);
+    width: min(100%, 430px);
   }
 
   .pokedex-detail-hero h2 {
-    font-size: 1.55rem;
+    font-size: 2.12rem;
   }
 
   .pokedex-detail-hero p {
-    font-size: 0.95rem;
-    margin-top: 0.12rem;
+    font-size: 1.24rem;
+    margin-top: 0.18rem;
   }
 
   .dialogue-bubbles p {
@@ -2456,18 +2496,18 @@ p {
   }
 
   .pokedex-detail-body {
-    gap: 0.58rem;
-    grid-template-columns: minmax(190px, 0.82fr) minmax(250px, 1fr);
+    gap: 0.82rem;
+    grid-template-columns: minmax(250px, 0.9fr) minmax(300px, 1fr);
   }
 
   .pokedex-detail-section h3 {
-    font-size: 1.22rem;
+    font-size: 1.72rem;
   }
 
   .pokedex-detail-section > p {
-    font-size: 0.78rem;
-    line-height: 1.45;
-    margin-top: 0.28rem;
+    font-size: 1.14rem;
+    line-height: 1.65;
+    margin-top: 0.44rem;
   }
 
   .pokedex-detail .stats-grid {
@@ -2476,32 +2516,32 @@ p {
   }
 
   .pokedex-detail .stats-grid span {
-    font-size: 0.86rem;
-    padding: 0.36rem 0.42rem;
+    font-size: 1.18rem;
+    padding: 0.68rem 0.56rem;
   }
 
   .pokedex-skill-list {
-    gap: 0.36rem;
-    margin-top: 0.34rem;
+    gap: 0.52rem;
+    margin-top: 0.44rem;
   }
 
   .pokedex-skill-list div {
-    padding: 0.36rem 0.46rem;
+    padding: 0.62rem 0.68rem;
   }
 
   .pokedex-skill-list strong {
-    font-size: 0.82rem;
+    font-size: 1.18rem;
   }
 
   .pokedex-skill-list span {
-    font-size: 0.66rem;
-    margin-top: 0.06rem;
+    font-size: 1rem;
+    margin-top: 0.08rem;
   }
 
   .pokedex-skill-list p {
-    font-size: 0.7rem;
-    line-height: 1.34;
-    margin-top: 0.12rem;
+    font-size: 1.05rem;
+    line-height: 1.42;
+    margin-top: 0.18rem;
   }
 
   .team-actor-1 {
@@ -2548,7 +2588,7 @@ p {
   }
 
   .app-shell {
-    max-width: 980px;
+    max-width: 1680px;
     padding: 8px;
   }
 
@@ -2559,10 +2599,21 @@ p {
     top: max(12px, env(safe-area-inset-top));
   }
 
+  .home-fullscreen-button {
+    top: 74px;
+  }
+
+  .home-fullscreen-message {
+    font-size: 0.96rem;
+    max-width: 340px;
+    top: 128px;
+  }
+
   .main-screen,
   .district-scene,
   .battle-result-screen {
     border-radius: 8px;
+    min-height: calc(100dvh - 16px);
   }
 
   .main-screen {
@@ -2795,33 +2846,34 @@ p {
 
 @media (min-width: 721px) and (max-width: 1180px) and (max-height: 820px) {
   .topbar {
-    margin-bottom: 0.38rem;
+    margin-bottom: 0.65rem;
   }
 
   .pokedex-view {
-    gap: 0.34rem;
+    gap: 0.62rem;
   }
 
   .pokedex-tab {
-    min-height: 62px;
+    min-height: 104px;
   }
 
   .pokedex-tab img {
-    height: 32px;
+    height: 62px;
   }
 
   .pokedex-detail {
-    padding: 0.5rem;
+    min-height: calc(100dvh - 226px);
+    padding: 0.9rem;
   }
 
   .pokedex-detail-hero img {
-    max-height: 222px;
-    width: min(100%, 222px);
+    max-height: clamp(310px, 44dvh, 410px);
+    width: min(100%, 410px);
   }
 
   .pokedex-detail-section > p,
   .pokedex-skill-list p {
-    line-height: 1.3;
+    line-height: 1.48;
   }
 }
 
@@ -2835,6 +2887,23 @@ p {
 
   .app-shell {
     padding: 8px;
+  }
+
+  .main-screen,
+  .login-screen,
+  .district-scene,
+  .battle-result-screen {
+    min-height: calc(100dvh - 16px);
+  }
+
+  .home-fullscreen-button {
+    padding: 0.6rem 0.78rem;
+    top: 64px;
+  }
+
+  .home-fullscreen-message {
+    font-size: 0.9rem;
+    top: 116px;
   }
 
   .pokedex-roster {
