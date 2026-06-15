@@ -517,14 +517,9 @@ async function requestGameFullscreen() {
   try {
     if (!isInFullscreenMode() && requestFullscreen) {
       await requestFullscreen.call(document.documentElement);
-      fullscreenMessage = "已放大顯示。";
-    } else if (isInFullscreenMode()) {
-      fullscreenMessage = "目前已是全螢幕。";
-    } else {
-      fullscreenMessage = "Safari 若無法直接全螢幕，請點分享，再選「加入主畫面」開啟。";
     }
   } catch {
-    fullscreenMessage = "Safari 若阻擋全螢幕，請點分享，再選「加入主畫面」開啟。";
+    fullscreenMessage = "";
   }
 
   renderHome();
@@ -1392,8 +1387,7 @@ function renderPokedex() {
 
   app.innerHTML = `
     <nav class="topbar">
-      <button type="button" data-view="home">首頁</button>
-      <button type="button" data-view="map">地圖</button>
+      <button type="button" data-view="home">返回首頁</button>
       <button type="button" data-view="shop">神社</button>
     </nav>
     <section class="pokedex-view">
@@ -1607,8 +1601,7 @@ function renderShop() {
   app.innerHTML = `
     <section class="shrine-scene">
       <nav class="topbar shrine-topbar">
-        <button type="button" data-view="home">首頁</button>
-        <button type="button" data-view="map">地圖</button>
+        <button type="button" data-view="home">返回首頁</button>
         <button type="button" data-view="pokedex">圖鑑</button>
       </nav>
       <div class="shrine-layout">
