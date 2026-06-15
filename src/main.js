@@ -508,9 +508,24 @@ function isInFullscreenMode() {
   return Boolean(document.fullscreenElement || document.webkitFullscreenElement) || window.navigator.standalone === true;
 }
 
+function renderFullscreenControl() {
+  return `
+    <button class="home-fullscreen-button ${isFullscreenButtonHidden ? "is-hidden" : ""}" type="button" data-fullscreen>
+      全螢幕
+    </button>
+  `;
+}
+
+function updateFullscreenControlVisibility() {
+  document.querySelectorAll("[data-fullscreen]").forEach((button) => {
+    button.classList.toggle("is-hidden", isFullscreenButtonHidden);
+  });
+}
+
 async function requestGameFullscreen() {
   fullscreenMessage = "";
   isFullscreenButtonHidden = true;
+  updateFullscreenControlVisibility();
   const requestFullscreen = document.documentElement.requestFullscreen
     ?? document.documentElement.webkitRequestFullscreen;
 
@@ -520,10 +535,21 @@ async function requestGameFullscreen() {
     }
   } catch {
     fullscreenMessage = "";
+    isFullscreenButtonHidden = false;
   }
 
-  renderHome();
+  updateFullscreenControlVisibility();
 }
+
+function handleFullscreenModeChange() {
+  if (!isInFullscreenMode()) {
+    isFullscreenButtonHidden = false;
+    updateFullscreenControlVisibility();
+  }
+}
+
+document.addEventListener("fullscreenchange", handleFullscreenModeChange);
+document.addEventListener("webkitfullscreenchange", handleFullscreenModeChange);
 
 function renderDialogueBubbles(lines = []) {
   if (!lines.length) return "";
@@ -767,11 +793,7 @@ function renderHome() {
   app.innerHTML = `
     <section class="main-screen">
       <button class="home-logout-button" type="button" data-logout>登出</button>
-      ${isFullscreenButtonHidden ? "" : `
-        <button class="home-fullscreen-button" type="button" data-fullscreen>
-          ${isInFullscreenMode() ? "已全螢幕" : "全螢幕"}
-        </button>
-      `}
+      ${renderFullscreenControl()}
       ${fullscreenMessage ? `<p class="home-fullscreen-message" aria-live="polite">${fullscreenMessage}</p>` : ""}
       ${renderFinalBossHomeEntry(progress)}
       ${renderMapHotspots()}
@@ -821,6 +843,7 @@ function renderMap() {
       <button type="button" data-view="shop">神社</button>
     </nav>
     <section class="map-overview">
+      ${renderFullscreenControl()}
       <div class="interactive-map" role="img" aria-label="桃園 13 區冒險地圖">
         ${renderMapHotspots()}
       </div>
@@ -848,6 +871,7 @@ function renderDistrictIntro(districtId) {
 
   app.innerHTML = `
     <section class="district-scene intro-scene" style="${getDistrictSceneStyle(district)}">
+      ${renderFullscreenControl()}
       <nav class="scene-nav">
         <button type="button" data-view="home">返回主畫面</button>
         <button type="button" data-view="pokedex">圖鑑</button>
@@ -893,6 +917,7 @@ function renderFinalBossIntro() {
 
   app.innerHTML = `
     <section class="district-scene intro-scene final-boss-scene" style="${getDistrictSceneStyle(finalBossDistrict)}">
+      ${renderFullscreenControl()}
       <nav class="scene-nav">
         <button type="button" data-view="home">返回主畫面</button>
         <button type="button" data-view="pokedex">圖鑑</button>
@@ -1390,6 +1415,7 @@ function renderPokedex() {
       <button type="button" data-view="home">返回首頁</button>
       <button type="button" data-view="shop">神社</button>
     </nav>
+    ${renderFullscreenControl()}
     <section class="pokedex-view">
       <div class="pokedex-roster" role="tablist" aria-label="桃花園圖鑑角色">
         ${entries.map((entry) => renderPokedexTab(entry, selectedEntry.id)).join("")}
@@ -1600,6 +1626,7 @@ function renderShop() {
 
   app.innerHTML = `
     <section class="shrine-scene">
+      ${renderFullscreenControl()}
       <nav class="topbar shrine-topbar">
         <button type="button" data-view="home">返回首頁</button>
         <button type="button" data-view="pokedex">圖鑑</button>
