@@ -82,6 +82,7 @@ let activeShrineCharacterId = "";
 let isLoginPanelOpen = false;
 let isZhuyinEnabled = false;
 let fullscreenMessage = "";
+let isFullscreenButtonHidden = false;
 
 function renderZhuyinToggle() {
   if (!zhuyinToggleButton) return;
@@ -509,6 +510,7 @@ function isInFullscreenMode() {
 
 async function requestGameFullscreen() {
   fullscreenMessage = "";
+  isFullscreenButtonHidden = true;
   const requestFullscreen = document.documentElement.requestFullscreen
     ?? document.documentElement.webkitRequestFullscreen;
 
@@ -770,9 +772,11 @@ function renderHome() {
   app.innerHTML = `
     <section class="main-screen">
       <button class="home-logout-button" type="button" data-logout>登出</button>
-      <button class="home-fullscreen-button" type="button" data-fullscreen>
-        ${isInFullscreenMode() ? "已全螢幕" : "全螢幕"}
-      </button>
+      ${isFullscreenButtonHidden ? "" : `
+        <button class="home-fullscreen-button" type="button" data-fullscreen>
+          ${isInFullscreenMode() ? "已全螢幕" : "全螢幕"}
+        </button>
+      `}
       ${fullscreenMessage ? `<p class="home-fullscreen-message" aria-live="polite">${fullscreenMessage}</p>` : ""}
       ${renderFinalBossHomeEntry(progress)}
       ${renderMapHotspots()}
@@ -815,8 +819,6 @@ function renderFinalBossHomeEntry(progress) {
 }
 
 function renderMap() {
-  const progress = loadProgress();
-
   app.innerHTML = `
     <nav class="topbar">
       <button type="button" data-view="home">首頁</button>
@@ -831,28 +833,7 @@ function renderMap() {
         <p class="eyebrow">Taoyuan Map</p>
         <h2>直接點擊地圖上的分區</h2>
       </div>
-      ${renderFinalBossMapEntry(progress)}
     </section>
-  `;
-}
-
-function renderFinalBossMapEntry(progress) {
-  const completedCount = new Set(progress.completedDistrictIds ?? []).size;
-  const isUnlocked = hasCompletedAllDistricts(progress);
-  const bossIntro = getFinalBossIntroduction();
-
-  return `
-    <article class="final-boss-entry ${isUnlocked ? "is-unlocked" : "is-locked"}">
-      <img src="${getFinalBossImage()}" alt="${finalBossSpirit.name}" />
-      <div>
-        <p class="tag">${isUnlocked ? "最終挑戰" : `${completedCount} / ${orderedDistricts.length}`}</p>
-        <h3>${bossIntro?.name ?? finalBossSpirit.name}</h3>
-        <p>${isUnlocked ? bossIntro?.intro ?? finalBossDistrict.description : "完成十三區探險後，迷霧之城會在地圖上現身。"}</p>
-      </div>
-      <button type="button" data-final-intro ${isUnlocked ? "" : "disabled"}>
-        ${progress.finalBossDefeated ? "再次挑戰" : "進入魔王戰"}
-      </button>
-    </article>
   `;
 }
 

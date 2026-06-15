@@ -225,11 +225,11 @@ button:disabled {
 
 .home-fullscreen-button {
   box-shadow: 0 10px 24px rgba(87, 52, 32, 0.24);
+  bottom: clamp(74px, 8vw, 96px);
   min-width: 0;
   padding: 0.72rem 1rem;
   position: absolute;
   right: clamp(14px, 2.5vw, 32px);
-  top: clamp(82px, 8vw, 108px);
   z-index: 5;
 }
 
@@ -246,8 +246,8 @@ button:disabled {
   max-width: min(420px, calc(100% - 32px));
   padding: 0.75rem 0.9rem;
   position: absolute;
+  bottom: clamp(74px, 8vw, 96px);
   right: clamp(14px, 2.5vw, 32px);
-  top: clamp(140px, 13vw, 172px);
   z-index: 5;
 }
 
@@ -1025,42 +1025,6 @@ p {
   background: #fff;
   box-shadow: 0 10px 28px rgba(62, 44, 24, 0.12);
   transform: translateY(-2px);
-}
-
-.final-boss-entry {
-  align-items: center;
-  background: rgba(255, 250, 244, 0.92);
-  border: 1px solid rgba(38, 50, 56, 0.12);
-  border-radius: 8px;
-  display: grid;
-  gap: 0.9rem;
-  grid-template-columns: 96px minmax(0, 1fr) auto;
-  margin-top: 1rem;
-  padding: 0.8rem;
-}
-
-.final-boss-entry img {
-  filter:
-    drop-shadow(0 0 1px rgba(255, 255, 255, 0.95))
-    drop-shadow(0 12px 18px rgba(35, 27, 18, 0.2));
-  height: 96px;
-  object-fit: contain;
-  width: 96px;
-}
-
-.final-boss-entry h3,
-.final-boss-entry p {
-  margin: 0.15rem 0;
-}
-
-.final-boss-entry.is-locked {
-  opacity: 0.72;
-}
-
-.final-boss-entry.is-locked img {
-  filter:
-    brightness(0)
-    drop-shadow(0 8px 12px rgba(35, 27, 18, 0.2));
 }
 
 .final-boss-scene {
@@ -2600,13 +2564,13 @@ p {
   }
 
   .home-fullscreen-button {
-    top: 74px;
+    bottom: 86px;
   }
 
   .home-fullscreen-message {
+    bottom: 86px;
     font-size: 0.96rem;
     max-width: 340px;
-    top: 128px;
   }
 
   .main-screen,
@@ -2617,6 +2581,8 @@ p {
   }
 
   .main-screen {
+    aspect-ratio: auto;
+    height: calc(100dvh - 16px);
     margin-bottom: 0;
   }
 
@@ -2667,9 +2633,20 @@ p {
     object-fit: contain;
   }
 
-  .home-guide-stage .dialogue-bubbles,
+  .home-guide-stage .dialogue-bubbles {
+    bottom: calc(100% + 0.4rem);
+    display: block;
+    height: 86px;
+    left: 0;
+    width: min(260px, calc(100vw - 32px));
+  }
+
   .home-player-stage .dialogue-bubbles {
-    display: none;
+    bottom: calc(100% + 0.45rem);
+    display: block;
+    height: 94px;
+    right: 0;
+    width: min(286px, calc(100vw - 32px));
   }
 
   .scene-nav {
@@ -2897,13 +2874,13 @@ p {
   }
 
   .home-fullscreen-button {
+    bottom: 64px;
     padding: 0.6rem 0.78rem;
-    top: 64px;
   }
 
   .home-fullscreen-message {
+    bottom: 64px;
     font-size: 0.9rem;
-    top: 116px;
   }
 
   .pokedex-roster {
@@ -2954,19 +2931,6 @@ p {
   .dialogue-bubbles p {
     font-size: 0.78rem;
     padding: 0.5rem 0.58rem;
-  }
-
-  .final-boss-entry {
-    grid-template-columns: 72px minmax(0, 1fr);
-  }
-
-  .final-boss-entry img {
-    height: 72px;
-    width: 72px;
-  }
-
-  .final-boss-entry button {
-    grid-column: 1 / -1;
   }
 
   .main-panel {
