@@ -11,7 +11,7 @@ import {
   goToNextQuestion,
   useUltimate,
 } from "./systems/battleSystem.js?v=406";
-import { loadProgress, loginProgress, logoutProgress, saveProgress } from "./systems/progressStorage.js?v=403";
+import { loadAllStudentProgress, loadProgress, loginProgress, logoutProgress, saveProgress } from "./systems/progressStorage.js?v=404";
 
 const app = document.querySelector("#app");
 const zhuyinToggleButton = document.querySelector("[data-zhuyin-toggle]");
@@ -79,6 +79,7 @@ let activeBattleTeam = [null, null, null];
 let activeSkillMemberId = "";
 let activePokedexCharacterId = "player_boy";
 let activeShrineCharacterId = "";
+let activeLeaderboardClassId = "all";
 let isLoginPanelOpen = false;
 let isZhuyinEnabled = false;
 let fullscreenMessage = "";
@@ -345,6 +346,76 @@ function getFinalBattleBackground() {
 
 function isTeacherProgress(progress = loadProgress()) {
   return progress.studentId === teacherAccountId;
+}
+
+function getStudentClassId(studentId) {
+  return String(studentId ?? "").slice(0, 3);
+}
+
+function getStudentSeatNumber(studentId) {
+  return String(studentId ?? "").slice(3, 5);
+}
+
+function getValidCompletedDistrictIds(progress) {
+  const districtIds = new Set(orderedDistricts.map((district) => district.id));
+  return [...new Set(progress.completedDistrictIds ?? [])].filter((districtId) => districtIds.has(districtId));
+}
+
+function getStudentChallengeStatus(progress) {
+  const completedCount = getValidCompletedDistrictIds(progress).length;
+  if (progress.finalBossDefeated) return "已完成最終戰";
+  if (completedCount >= orderedDistricts.length) return "最終挑戰";
+
+  const { district } = getCurrentChallengeBundle(progress);
+  return district ? `${district.code} ${district.name}` : "尚未開始";
+}
+
+function getLeaderboardEntries() {
+  return loadAllStudentProgress([teacherAccountId])
+    .map((studentProgress) => {
+      const completedDistrictIds = getValidCompletedDistrictIds(studentProgress);
+      const completedCount = completedDistrictIds.length;
+      const finalBossScore = studentProgress.finalBossDefeated ? 1 : 0;
+      const score = completedCount * 100 + finalBossScore * 1000 + Math.min(99, Math.max(0, studentProgress.coins ?? 0) / 1000);
+
+      return {
+        studentId: studentProgress.studentId,
+        classId: getStudentClassId(studentProgress.studentId),
+        seatNumber: getStudentSeatNumber(studentProgress.studentId),
+        selectedPlayerId: getSelectedPlayerId(studentProgress),
+        completedDistrictIds,
+        completedCount,
+        finalBossDefeated: Boolean(studentProgress.finalBossDefeated),
+        coins: studentProgress.coins ?? 0,
+        status: getStudentChallengeStatus(studentProgress),
+        score,
+      };
+    })
+    .sort((a, b) => (
+      b.score - a.score
+      || b.completedCount - a.completedCount
+      || Number(a.studentId) - Number(b.studentId)
+    ));
+}
+
+function getLeaderboardClassSummaries(entries) {
+  const summaries = new Map();
+
+  entries.forEach((entry) => {
+    const summary = summaries.get(entry.classId) ?? {
+      classId: entry.classId,
+      studentCount: 0,
+      completedTotal: 0,
+      finalBossDefeatedCount: 0,
+    };
+
+    summary.studentCount += 1;
+    summary.completedTotal += entry.completedCount;
+    if (entry.finalBossDefeated) summary.finalBossDefeatedCount += 1;
+    summaries.set(entry.classId, summary);
+  });
+
+  return [...summaries.values()].sort((a, b) => a.classId.localeCompare(b.classId));
 }
 
 function getUnlockedDistrictIds(progress = loadProgress()) {
@@ -793,6 +864,7 @@ function renderHome() {
   app.innerHTML = `
     <section class="main-screen">
       <button class="home-logout-button" type="button" data-logout>登出</button>
+      ${isTeacherProgress(progress) ? renderTeacherLeaderboardEntry() : ""}
       ${renderFullscreenControl()}
       ${fullscreenMessage ? `<p class="home-fullscreen-message" aria-live="polite">${fullscreenMessage}</p>` : ""}
       ${renderFinalBossHomeEntry(progress)}
@@ -812,6 +884,14 @@ function renderHome() {
     </section>
   `;
   scrollPageToTop();
+}
+
+function renderTeacherLeaderboardEntry() {
+  return `
+    <button class="home-leaderboard-button" type="button" data-view="leaderboard">
+      排行榜
+    </button>
+  `;
 }
 
 function renderFinalBossHomeEntry(progress) {
@@ -852,6 +932,131 @@ function renderMap() {
         <h2>直接點擊地圖上的分區</h2>
       </div>
     </section>
+  `;
+}
+
+function renderTeacherLeaderboard() {
+  const progress = loadProgress();
+  if (!isTeacherProgress(progress)) {
+    renderHome();
+    return;
+  }
+
+  const entries = getLeaderboardEntries();
+  const classSummaries = getLeaderboardClassSummaries(entries);
+  const selectedClassExists = activeLeaderboardClassId === "all"
+    || classSummaries.some((summary) => summary.classId === activeLeaderboardClassId);
+  if (!selectedClassExists) activeLeaderboardClassId = "all";
+
+  const filteredEntries = activeLeaderboardClassId === "all"
+    ? entries
+    : entries.filter((entry) => entry.classId === activeLeaderboardClassId);
+  const completedAllCount = entries.filter((entry) => entry.completedCount >= orderedDistricts.length).length;
+  const finalBossDefeatedCount = entries.filter((entry) => entry.finalBossDefeated).length;
+  const averageCompleted = entries.length
+    ? (entries.reduce((total, entry) => total + entry.completedCount, 0) / entries.length).toFixed(1)
+    : "0.0";
+
+  app.innerHTML = `
+    <nav class="topbar">
+      <button type="button" data-view="home">返回首頁</button>
+      <button type="button" data-view="pokedex">圖鑑</button>
+      <button type="button" data-view="shop">神社</button>
+    </nav>
+    ${renderFullscreenControl()}
+    <section class="leaderboard-view">
+      <header class="leaderboard-header">
+        <div>
+          <p class="eyebrow">Teacher Dashboard</p>
+          <h2>學生闖關排行榜</h2>
+        </div>
+        <div class="leaderboard-summary" aria-label="排行榜總覽">
+          <span><b>${entries.length}</b><small>學生</small></span>
+          <span><b>${averageCompleted}</b><small>平均完成區數</small></span>
+          <span><b>${completedAllCount}</b><small>完成十三區</small></span>
+          <span><b>${finalBossDefeatedCount}</b><small>通關最終戰</small></span>
+        </div>
+      </header>
+      <div class="leaderboard-class-tabs" role="tablist" aria-label="班級篩選">
+        ${renderLeaderboardClassButton("all", `全部班級 ${entries.length}`, activeLeaderboardClassId === "all")}
+        ${classSummaries.map((summary) => (
+          renderLeaderboardClassButton(summary.classId, `${summary.classId} 班 ${summary.studentCount}`, activeLeaderboardClassId === summary.classId)
+        )).join("")}
+      </div>
+      ${entries.length ? renderLeaderboardTable(filteredEntries) : renderLeaderboardEmpty()}
+    </section>
+  `;
+  scrollPageToTop();
+}
+
+function renderLeaderboardClassButton(classId, label, isActive) {
+  return `
+    <button
+      class="leaderboard-class-tab ${isActive ? "is-active" : ""}"
+      type="button"
+      data-leaderboard-class="${classId}"
+      aria-selected="${isActive ? "true" : "false"}"
+      role="tab"
+    >
+      ${escapeHtml(label)}
+    </button>
+  `;
+}
+
+function renderLeaderboardTable(entries) {
+  return `
+    <div class="leaderboard-table" role="table" aria-label="學生闖關排行榜">
+      <div class="leaderboard-row leaderboard-row-head" role="row">
+        <span role="columnheader">名次</span>
+        <span role="columnheader">學號</span>
+        <span role="columnheader">目前關卡</span>
+        <span role="columnheader">進度</span>
+        <span role="columnheader">區域完成狀態</span>
+      </div>
+      ${entries.map((entry, index) => renderLeaderboardRow(entry, index + 1)).join("")}
+    </div>
+  `;
+}
+
+function renderLeaderboardRow(entry, rank) {
+  const completedDistrictIds = new Set(entry.completedDistrictIds);
+  return `
+    <article class="leaderboard-row" role="row">
+      <span class="leaderboard-rank" role="cell">${rank}</span>
+      <span class="leaderboard-student" role="cell">
+        <img src="${getPlayerAvatarImage(entry.selectedPlayerId)}" alt="" />
+        <strong>${escapeHtml(entry.studentId)}</strong>
+        <small>${escapeHtml(entry.classId)} 班 ${escapeHtml(entry.seatNumber)} 號</small>
+      </span>
+      <span class="leaderboard-status" role="cell">${escapeHtml(entry.status)}</span>
+      <span class="leaderboard-progress" role="cell">
+        <b>${entry.completedCount} / ${orderedDistricts.length}</b>
+        <small>${entry.finalBossDefeated ? "最終戰已通關" : `金幣 ${entry.coins}`}</small>
+      </span>
+      <span class="leaderboard-districts" role="cell" aria-label="${escapeHtml(entry.studentId)} 的區域完成狀態">
+        ${orderedDistricts.map((district) => `
+          <i
+            class="${completedDistrictIds.has(district.id) ? "is-complete" : ""}"
+            title="${escapeHtml(district.name)}"
+            aria-label="${escapeHtml(district.name)}${completedDistrictIds.has(district.id) ? "已完成" : "未完成"}"
+          >${district.code}</i>
+        `).join("")}
+        <i
+          class="is-final ${entry.finalBossDefeated ? "is-complete" : ""}"
+          title="最終戰"
+          aria-label="最終戰${entry.finalBossDefeated ? "已完成" : "未完成"}"
+        >王</i>
+      </span>
+    </article>
+  `;
+}
+
+function renderLeaderboardEmpty() {
+  return `
+    <div class="leaderboard-empty">
+      <h3>目前還沒有學生紀錄</h3>
+      <p>學生用自己的 5 位學號登入並開始闖關後，就會出現在這裡。</p>
+    </div>
   `;
 }
 
@@ -1747,6 +1952,7 @@ app.addEventListener("submit", (event) => {
   activeBattleTeam = [selectedPlayerId, null, null];
   activePokedexCharacterId = selectedPlayerId;
   activeShrineCharacterId = selectedPlayerId;
+  activeLeaderboardClassId = "all";
   isLoginPanelOpen = false;
   renderHome();
 });
@@ -1781,8 +1987,16 @@ app.addEventListener("click", (event) => {
     activeSkillMemberId = "";
     activePokedexCharacterId = "player_boy";
     activeShrineCharacterId = "";
+    activeLeaderboardClassId = "all";
     isLoginPanelOpen = false;
     renderLogin();
+    return;
+  }
+
+  const leaderboardClassButton = event.target.closest("[data-leaderboard-class]");
+  if (leaderboardClassButton) {
+    activeLeaderboardClassId = leaderboardClassButton.dataset.leaderboardClass;
+    renderTeacherLeaderboard();
     return;
   }
 
@@ -1956,6 +2170,7 @@ app.addEventListener("click", (event) => {
   if (view === "map") renderMap();
   if (view === "pokedex") renderPokedex();
   if (view === "shop") renderShop();
+  if (view === "leaderboard") renderTeacherLeaderboard();
 });
 
 renderZhuyinToggle();

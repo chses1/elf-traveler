@@ -7,6 +7,12 @@ function getAccountStorageKey(studentId) {
   return `${storageKey}-${studentId}`;
 }
 
+function getStudentIdFromAccountStorageKey(key) {
+  if (!key.startsWith(`${storageKey}-`)) return "";
+  const studentId = key.slice(`${storageKey}-`.length);
+  return /^\d{5}$/.test(studentId) ? studentId : "";
+}
+
 export function loadProgress() {
   const studentId = localStorage.getItem(activeAccountKey);
   if (!studentId) return structuredClone(initialPlayerState);
@@ -62,6 +68,35 @@ export function loginProgress(studentId, selectedPlayerId, progressPatch = {}) {
   };
   saveProgress(progress);
   return progress;
+}
+
+export function loadAllStudentProgress(excludedStudentIds = []) {
+  const excludedIds = new Set(excludedStudentIds);
+  const storageKeys = Array.from(
+    { length: localStorage.length },
+    (_, index) => localStorage.key(index),
+  ).filter(Boolean);
+
+  return storageKeys
+    .map((key) => getStudentIdFromAccountStorageKey(key))
+    .filter((studentId) => studentId && !excludedIds.has(studentId))
+    .map((studentId) => {
+      const saved = localStorage.getItem(getAccountStorageKey(studentId));
+      try {
+        return {
+          ...structuredClone(initialPlayerState),
+          isLoggedIn: true,
+          studentId,
+          ...JSON.parse(saved),
+        };
+      } catch {
+        return {
+          ...structuredClone(initialPlayerState),
+          isLoggedIn: true,
+          studentId,
+        };
+      }
+    });
 }
 
 export function logoutProgress() {
