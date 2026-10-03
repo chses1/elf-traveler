@@ -3,7 +3,7 @@ import { spirits } from "./data/spirits.js?v=400";
 import { gameConfig } from "./data/gameConfig.js?v=302";
 import { characterSkills } from "./data/characterSkills.js?v=405";
 import { characterIntroductions } from "./data/characterIntroductions.js?v=401";
-import { questions } from "./data/questions.js?v=401";
+import { questions } from "./data/questions.js?v=402";
 import {
   answerQuestion,
   createBattleState,
